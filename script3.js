@@ -1,4 +1,4 @@
-let mic;
+let mic, playbutton;
 let fft; let smoothing = 0.6; let bins = 512;
 let hiPass = 150; let loPass = 1500;
 let eqLow = Math.ceil(hiPass * bins / 44100)*2;
@@ -8,10 +8,12 @@ let eqHi = Math.ceil(loPass * bins / 44100*2);
 function setup() {
   background(200);
   createCanvas(bins, 400);
+  playbutton = createButton("play");
+  playbutton.mousePressed(startMic);
  
 
   mic = new p5.AudioIn();
-  mic.start();
+  
 
   
   filter = new p5.LowPass();
@@ -49,6 +51,13 @@ function setup() {
   compressor.attack = 0.001;
   fft.setInput(compressor);
 }
+
+function startMic (){
+
+  mic.start();
+
+}
+
 
 
 var w = (eqHi-eqLow)/bins*200;
@@ -140,3 +149,7 @@ function fftCurve(list){
   }
 
 } */
+
+
+  //https://rawcdn.githack.com/ExportingImagination/trigger/refs/heads/main/index.html
+// https://raw.githack.com/
