@@ -3,6 +3,17 @@ let fft; let smoothing = 0.6; let bins = 512;
 let hiPass = 150; let loPass = 1500;
 let eqLow = Math.ceil(hiPass * bins / 44100)*2;
 let eqHi = Math.ceil(loPass * bins / 44100*2);
+var start = 0;
+
+/*   song.disconnect();
+  compressor.process(song);
+  song.connect(filter);
+  fft.setInput(filter.chain(compressor));
+      //compressor.threshold = -60;
+      compressor.input.gain.value = 1;
+
+      compressor.output.gain.value = 20;
+      compressor.release = 0.1;  */
 
 
 function setup() {
@@ -34,15 +45,7 @@ function setup() {
   compressor.process(filter2);
 
   
-/*   song.disconnect();
-  compressor.process(song);
-  song.connect(filter);
-  fft.setInput(filter.chain(compressor));
-      //compressor.threshold = -60;
-      compressor.input.gain.value = 1;
 
-      compressor.output.gain.value = 20;
-      compressor.release = 0.1;  */
  
  
   compressor.threshold = -12;
@@ -54,7 +57,40 @@ function setup() {
 
 function startMic (){
 
+ 
+  mic = new p5.AudioIn();
   mic.start();
+  
+
+  
+  filter = new p5.LowPass();
+  filter.biquad.frequency.value = loPass;
+  filter.biquad.Q.value = 0.01;  
+  filter2 = new p5.HighPass();
+  filter2.biquad.frequency.value = hiPass;
+  filter2.biquad.Q.value = 0.01;
+
+  filter.process(mic);
+  filter2.process(filter);
+ 
+
+  
+  fft = new p5.FFT(smoothing,bins); 
+  compressor = new p5.Compressor();  
+  
+  compressor.process(filter2);
+
+  
+
+ 
+ 
+  compressor.threshold = -12;
+  compressor.input.gain.value = 1;
+  compressor.release = 0.003;
+  compressor.attack = 0.001;
+  fft.setInput(compressor);
+
+  start = 1;
 
 }
 
@@ -64,7 +100,9 @@ var w = (eqHi-eqLow)/bins*200;
 //console.log(w);
 
 function draw() {
-
+  if (start == 0){
+    return
+  }else{
   background(100);
   var spectrum = fft.analyze();
   var eqspectrum = spectrum.slice(eqLow, eqHi);
@@ -85,7 +123,7 @@ function draw() {
   fftCurve(eqspectrum);
   
 
-
+  }
 
 }
 
@@ -151,5 +189,3 @@ function fftCurve(list){
 } */
 
 
-  //https://rawcdn.githack.com/ExportingImagination/trigger/refs/heads/main/index.html
-// https://raw.githack.com/
