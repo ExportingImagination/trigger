@@ -23,36 +23,7 @@ function setup() {
   playbutton.mousePressed(startMic);
  
 
-  mic = new p5.AudioIn();
-  
-
-  
-  filter = new p5.LowPass();
-  filter.biquad.frequency.value = loPass;
-  filter.biquad.Q.value = 0.01;  
-  filter2 = new p5.HighPass();
-  filter2.biquad.frequency.value = hiPass;
-  filter2.biquad.Q.value = 0.01;
-
-  filter.process(mic);
-  filter2.process(filter);
  
-
-  
-  fft = new p5.FFT(smoothing,bins); 
-  compressor = new p5.Compressor();  
-  
-  compressor.process(filter2);
-
-  
-
- 
- 
-  compressor.threshold = -12;
-  compressor.input.gain.value = 1;
-  compressor.release = 0.003;
-  compressor.attack = 0.001;
-  fft.setInput(compressor);
 }
 
 function startMic (){
